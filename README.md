@@ -1,4 +1,4 @@
-# Làm WEB tĩnh sử dụng PHP MVC REST API (RESTFUL API)
+# RESTful API Ký túc xá UTT theo mô hình MVC
 <h1> Database Connection </h1>
 
 > <p> Đường dẫn của file kết nối Database => ../config/db.php </p>
