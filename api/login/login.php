@@ -1,29 +1,17 @@
 <?php
-header('Access-Control-Allow-Origin: *');
-header('Content-Type: application/json');
-header('Access-Control-Allow-Methods: POST');
-header('Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Methods, Authorization, X-Requested-With');
+require_once '../../config/db.php';
+require_once '../../model/Login.php';
 
-// Kết nối cơ sở dữ liệu
-include_once '../../config/db.php';
-include_once '../../model/Login.php';
+// Xử lý request POST khi submit form đăng nhập
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Lấy dữ liệu từ form
+    $username = $_POST['username'];
+    $password = $_POST['password'];
 
-// Lấy dữ liệu đăng nhập từ frontend
-$data = json_decode(file_get_contents("php://input"));
+    // Tạo đối tượng LoginModel và kiểm tra đăng nhập
+    $login = new Login();
+    $result = $login->authenticate($username, $password);
 
-$username = $data->username;
-$password = $data->password;
-
-// Kết nối cơ sở dữ liệu8
-$db = new db();
-$connect = $db->connect();
-
-// Khởi tạo đối tượng Account
-$account = new Login($connect);
-
-// Kiểm tra đăng nhập bằng model
-if ($account->login($username, $password)) {
-    echo json_encode(array('success' => true, 'redirect' => '../../view/account/index.html'));
-} else {
-    echo json_encode(array('success' => false));
+    // Trả về kết quả
+    echo json_encode($result);
 }

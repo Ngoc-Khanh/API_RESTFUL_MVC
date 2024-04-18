@@ -53,7 +53,7 @@ $router->post('/:name', function($param) {
 <?php
 class db
 {
-    // Nên dùng protected thay vì private
+    // Nên dùng protected thay vì  private
     protected $servername = "localhost"; // Tên máy chủ
     protected $username = "root"; // Tên máy thường là root :>
     protected $password = ""; // password

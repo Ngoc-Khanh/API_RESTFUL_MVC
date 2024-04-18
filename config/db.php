@@ -1,11 +1,10 @@
 <?php
-// "api_resful_kytucxa"
 class db
 {
     protected $servername = "localhost";
     protected $username = "root";
     protected $password = "";
-    protected $db = "api";
+    protected $db = "api_resful_kytucxa";
     private $conn;
 
     public function connect()
