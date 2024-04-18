@@ -14,8 +14,10 @@ $connect = $db->connect();
 // Khởi tạo đổi tượng Account
 $account = new Account($connect);
 
-$data = json_decode(file_get_contents("php://input"));
-$account->id_account = $data->id_account;
+// $data = json_decode(file_get_contents("php://input"));
+// $account->id_account = $data->id_account;
+
+$account->id_account = isset($_GET['id_account']) ? $_GET['id_account'] : die();
 
 if ($account->delete()) {
     echo json_encode(array('message', 'Account deleted'));

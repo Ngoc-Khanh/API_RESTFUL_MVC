@@ -1,4 +1,3 @@
-
 <?php
 header('Access-Control-Allow-Origin: *');
 header('Content-Type: application/json');
@@ -20,7 +19,8 @@ if (isset($result['message'])) {
     echo json_encode($result);
 } else {
     $account_item = array(
-        'id_account'=> $account->id_account,
+        'id_account'=> $account->
+        id_account,
         'user_account' => $account->user_account,
         'pass_account' => $account->pass_account,
         'type_account' => $account->type_account,
