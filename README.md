@@ -1,9 +1,9 @@
 # Làm WEB tĩnh sử dụng PHP MVC REST API (RESTFUL API)
 <h1> Database Connection </h1>
 
-> <p> Nhớ tạo một forder có tên (config) để sau này gộp bài dễ thay đổi SQL (Database) </p>
+> <p> Đường dẫn của file kết nối Database => ../config/db.php </p>
 
-<p> Ở đây mình dùng MySQL và đặt tên là db.php </p>
+<p> Cấu hình file db.php </p>
 
 ```php
 <?php
