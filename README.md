@@ -1,10 +1,9 @@
-# PHP_MVC_REST_API (RESTFUL API)
-```
-<h2> Database Connection </h2>
+# Làm WEB tĩnh sử dụng PHP MVC REST API (RESTFUL API)
+<h1> Database Connection </h1>
 
-> <p> Phương thức kết nối theo đường dẫn config/db.php (MySQL) </p>
+> <p> Nhớ tạo một forder có tên (config) để sau này gộp bài dễ thay đổi SQL (Database) </p>
 
-<p> db.php </p>
+<p> Ở đây mình dùng MySQL và đặt tên là db.php </p>
 
 ```php
 <?php
