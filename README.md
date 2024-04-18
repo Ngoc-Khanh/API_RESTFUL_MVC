@@ -45,26 +45,33 @@ $router->post('/:name', function($param) {
 ```
 <h2> Database Connection </h2>
 
-> <p> Consider that for using database you should edit config.php file before start using database.</p>
+> <p> Nhớ tạo một forder có tên (config) để sau này gộp bài dễ thay đổi SQL (Database) </p>
 
-<p> For getting a database connection, you can use below sample in Model directory: </p>
+<p> Ở đây mình dùng MySQL và đặt tên là db.php </p>
 
 ```php
 <?php
+class db
+{
+    // Nên dùng protected thay vì private
+    protected $servername = "localhost"; // Tên máy chủ
+    protected $username = "root"; // Tên máy thường là root :>
+    protected $password = ""; // password
+    protected $db = "api"; // Tên Database mà bạn đặt
+    private $conn; 
 
-use MVC\Model;
-
-class ModelsHome extends Model {
-
-    public function getAllUser() {
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "user");
-        
-        /*
-          $query->row : return 1 row
-          $query->rows : return all rows
-          $query->num_rows : return rows count
-        */
-        return $query->rows;
+    public function connect()
+    {
+        $this->conn = null;
+        try {
+            $this->conn = new PDO("mysql:host=" . $this->servername . ";dbname=" . $this->db, $this->username, $this->password);
+            // set the PDO error mode to exception
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            // echo "Connected successfull";
+        } catch (PDOException $e) {
+            echo "Connection failed: " . $e->getMessage();
+        }
+        return $this->conn;
     }
 }
 ```
