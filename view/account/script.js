@@ -19,10 +19,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Lấy dữ liệu sinh viên và hiển thị trên bảng khi trang được tải
     fetchAccounts();
+    // disableInputs();
 
     // Ẩn nút "Cập nhật" và "Hủy bỏ"
     updateButton.style.display = 'none';
     cancelButton.style.display = 'none';
+
+    // function disableInputs() {
+    //     userInput.disabled = true;
+    //     passInput.disabled = true;
+    //     typeInput.disabled = true;
+    // }
+
+    // function enableInputs() {
+    //     userInput.disabled = false;
+    //     passInput.disabled = false;
+    //     typeInput.disabled = false;
+    // }
 
     // Hàm để lấy dữ liệu sinh viên từ API và hiển thị trên bảng
     function fetchAccounts() {
@@ -53,8 +66,8 @@ document.addEventListener("DOMContentLoaded", function () {
                             <td>${account.pass_account}</td>
                             <td>${account.type_account}</td>
                             <td>
-                                <button type="button" id="updateBtn" class="btn-sua">Sửa</button>
-                                <button type="button" id="deleteBtn" class="btn-xoa">Xóa</button>
+                                <button type="button" id="updateBtn_${account.id_account}" class="btn-sua">Sửa</button>
+                                <button type="button" id="deleteBtn_${account.id_account}" class="btn-xoa">Xóa</button>
                             </td>
                         </tr>`;
             accountTableBody.insertAdjacentHTML('beforeend', row);
@@ -117,11 +130,22 @@ document.addEventListener("DOMContentLoaded", function () {
                         passInput.value = account.pass_account;
                         typeInput.value = account.type_account;
 
+                        // enableInputs();
+
                         // Hiển thị nút "Cập nhật" và "Hủy bỏ"
                         updateButton.style.display = 'inline-block';
                         cancelButton.style.display = 'inline-block';
                         addButton.style.display = 'none';
-                        deleteButton.style.display = 'none';
+
+                        // Ẩn nút "XÓA" và "SỬA"
+                        const deleteBtns = document.querySelectorAll('.btn-xoa');
+                        const updateBtns = document.querySelectorAll('.btn-sua');
+                        deleteBtns.forEach(btn => {
+                            btn.style.display = 'none';
+                        });
+                        updateBtns.forEach(btn => {
+                            btn.style.display = 'none';
+                        });
                     })
                     .catch(error => console.error('Error:', error));
             } else {
@@ -199,6 +223,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         passInput.value = '';
                         typeInput.value = '';
 
+                        // disableInputs();
+
                         updateButton.style.display = 'none';
                         cancelButton.style.display = 'none';
                         addButton.style.display = 'inline-block';
@@ -222,6 +248,18 @@ document.addEventListener("DOMContentLoaded", function () {
         updateButton.style.display = 'none';
         cancelButton.style.display = 'none';
         addButton.style.display = 'inline-block';
+
+        // disableInputs();
+
+        // Hiển thị nút "XÓA" và "SỬA"
+        const deleteBtns = document.querySelectorAll('.btn-xoa');
+        const updateBtns = document.querySelectorAll('.btn-sua');
+        deleteBtns.forEach(btn => {
+            btn.style.display = 'inline-block';
+        });
+        updateBtns.forEach(btn => {
+            btn.style.display = 'inline-block';
+        });
     });
 
     // Hàm để xóa tài khoản

@@ -1,4 +1,5 @@
 <?php
+// "api_resful_kytucxa"
 class db
 {
     protected $servername = "localhost";
