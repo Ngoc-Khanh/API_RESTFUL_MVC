@@ -1,4 +1,10 @@
 # Làm WEB tĩnh sử dụng PHP MVC REST API (RESTFUL API)
+<h1>Introduction</h1>
+<p>Simply, the framework will route requests to the correct controller and model. It will do this by analysing request URI for the controller name and the request type (be it POST, PUT, GET, etc.). It will then do some sanity checks, before initialising a new controller and model object and calling the correct method on the controller.</p>
+<h1>Documentation</h1>
+<h2> Add a new route </h2>
+<p> For creating a new route you should open Route.php file from Router directory.  </p>
+<p> There is already exist some examples in the file which you can use them as you need.</p>
 
 ```php
 <?php
