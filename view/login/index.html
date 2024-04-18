@@ -19,11 +19,23 @@
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" required>
             </div>
-            <button type="submit">Login</button>
+            <div class="btn-form">
+                <button type="submit">Login</button>
+                <button type="button" id="register-btn" class="register-button">Register</button>
+            </div>
         </form>
         <p id="message" class="message"></p>
     </div>
 
     <script src="script.js"></script>
+    <script>
+        // Thêm sự kiện click cho nút "Register"
+        document.getElementById("register-btn").addEventListener("click", function() {
+            // Chuyển hướng sang trang đăng ký
+            if (confirm("Bạn muốn đăng ký tài khoản không?")) {
+                window.location.href = "../../view/register/index.html";
+            }
+        });
+    </script>
 </body>
 </html>
