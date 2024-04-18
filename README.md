@@ -1,1 +1,64 @@
-# Làm WEB PHP với API RESTFUL
+# Làm WEB tĩnh sử dụng PHP MVC REST API (RESTFUL API)
+
+```php
+<?php
+
+$router->get('/home', 'home@index');
+
+$router->post('/home', 'home@post');
+
+$router->get('/', function() {
+    echo 'Welcome ';
+});
+```
+
+<p> For getting parameters follow below example: </p>
+
+```php
+<?php
+
+$router->get('/:name', function($param) {
+    echo 'Welcome ' . $param['name'];
+});
+```
+<p> For example, when I use this url "yourdomin.com/afgprogrammer" I will get following output.</p>
+
+```
+Welcome afgprogrammer
+```
+
+<p> It's just a Piece of cake :) </p>
+<p> If you want to send the POST requests follow below example: </p>
+
+```php
+
+$router->post('/:name', function($param) {
+    echo 'Welcome ' . $param['name'];
+});
+
+```
+<h2> Database Connection </h2>
+
+> <p> Consider that for using database you should edit config.php file before start using database.</p>
+
+<p> For getting a database connection, you can use below sample in Model directory: </p>
+
+```php
+<?php
+
+use MVC\Model;
+
+class ModelsHome extends Model {
+
+    public function getAllUser() {
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "user");
+        
+        /*
+          $query->row : return 1 row
+          $query->rows : return all rows
+          $query->num_rows : return rows count
+        */
+        return $query->rows;
+    }
+}
+```
