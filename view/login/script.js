@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.success) {
                 // Đăng nhập thành công, redirect hoặc thực hiện hành động tiếp theo
                 alert(data.message);
-                window.location.href = 'dashboard.php'; // Redirect đến trang dashboard
+                window.location.href = '../menu/index.html'; // Redirect đến trang dashboard
             } else {
                 // Đăng nhập thất bại, hiển thị thông báo lỗi
                 document.getElementById('message').textContent = data.message;
