@@ -240,7 +240,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Sự kiện click vào nút Hủy
     cancelButton.addEventListener('click', function () {
-        // selectedPhongId = null;
+        // Xóa lớp CSS 'selected-row' khỏi tất cả các hàng trong bảng
+        const selectedRows = phongTableBody.querySelectorAll('.selected-row');
+        selectedRows.forEach(row => {
+            row.classList.remove('selected-row');
+        });
+
+        // Đặt giá trị của selectedPhongId thành null
+        selectedPhongId = null;
+
+        // Mở khóa ô nhập liệu "Mã Phòng" để có thể chỉnh sửa
+        MaPhongInput.disabled = false;
+
+        // Đặt giá trị của các ô input về rỗng
         MaPhongInput.value = '';
         MaKhuInput.value = '';
         SoNguoiToiDaInput.value = '';
