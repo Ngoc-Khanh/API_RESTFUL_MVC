@@ -28,6 +28,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     // Hiển thị thông báo không có bản ghi nếu không có dữ liệu
                     console.log('No records found');
                 } else {
+                    //cap nhat so luong sinh vien hien tai trong moi phong khi tair laij trang
+                    fetchCurrentStudentsCount()
                     // Hiển thị dữ liệu sinh viên trên bảng
                     displayPhongs(data.data);
                 }
@@ -58,6 +60,63 @@ document.addEventListener("DOMContentLoaded", function () {
             phongTableBody.insertAdjacentHTML('beforeend', row);
         });
     }
+
+    // Hàm để cập nhật số người hiện tại trong mỗi phòng từ cơ sở dữ liệu
+function fetchCurrentStudentsCount() {
+    fetch('http://localhost/mvc-test/api/room/songuoihientai.php')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(item => {
+                const MaPhong = item.MaPhong;
+                const SoSinhVien = item.SoSinhVien;
+
+                // Tìm phòng tương ứng trong bảng và cập nhật số người hiện tại
+                const phongRow = document.querySelector(`tr[data-phong-id="${MaPhong}"]`);
+                if (phongRow) {
+                    const SoNguoiHienTaiCell = phongRow.querySelector('td:nth-child(4)');
+                    if (SoNguoiHienTaiCell) {
+                        SoNguoiHienTaiCell.textContent = SoSinhVien;
+                    }
+                }
+
+                // Cập nhật số người hiện tại trong cơ sở dữ liệu
+                updateCurrentStudentsCountInDatabase(MaPhong, SoSinhVien);
+            });
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+// Hàm để cập nhật số người hiện tại trong cơ sở dữ liệu
+function updateCurrentStudentsCountInDatabase() {
+    // Gửi yêu cầu để lấy danh sách tất cả các mã phòng từ cơ sở dữ liệu
+    fetch('http://localhost/mvc-test/api/room/all_rooms.php')
+        .then(response => response.json())
+        .then(data => {
+            // Duyệt qua danh sách các mã phòng
+            data.forEach(room => {
+                const MaPhong = room.MaPhong;
+                const SoSinhVien = room.SoSinhVien;
+
+                // Gửi yêu cầu cập nhật số người hiện tại cho từng mã phòng
+                fetch(`http://localhost/mvc-test/api/room/update_songuoihientai.php?MaPhong=${MaPhong}&SoNguoiHienTai=${SoSinhVien}`, {
+                    method: 'PUT'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+
 
     // Sự kiện click vào hàng trong bảng
     phongTable.addEventListener('click', function (event) {
@@ -100,53 +159,60 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Sự kiện click vào nút Thêm
     addButton.addEventListener('click', function () {
-        const newPhong = {
-            MaPhong: MaPhongInput.value,
-            MaKhu: MaKhuInput.value,
-            SoNguoiToiDa: SoNguoiToiDaInput.value,
-            SoNguoiHienTai: SoNguoiHienTaiInput.value,
-            Gia: GiaInput.value
-        };
-
-        // Kiểm tra xem Mã phòng đã tồn tại chưa bằng cách gửi yêu cầu GET đến API
-        fetch(`http://localhost/mvc-test/api/room/show.php?MaPhong=${newPhong.MaPhong}`)
-            .then(response => response.json())
-            .then(existingPhong => {
-                if (existingPhong && existingPhong.MaPhong === newPhong.MaPhong) {
-                    // Nếu Mã phòng đã tồn tại, hiển thị thông báo lỗi
-                    alert("Mã phòng đã tồn tại. Vui lòng nhập Mã phòng khác!");
-                } else {
-                    // Nếu Mã phòng chưa tồn tại, thêm mới
-                    fetch('http://localhost/mvc-test/api/room/create.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(newPhong)
-                    })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Network response was not ok');
-                            }
-                            return response.json();
+        // Kiểm tra xem các ô text (ngoại trừ ô text Số người hiện tại) đã được nhập đầy đủ thông tin chưa
+        if (MaPhongInput.value && MaKhuInput.value && SoNguoiToiDaInput.value && GiaInput.value) {
+            const newPhong = {
+                MaPhong: MaPhongInput.value,
+                MaKhu: MaKhuInput.value,
+                SoNguoiToiDa: SoNguoiToiDaInput.value,
+                SoNguoiHienTai: 0, // Gán giá trị mặc định cho Số người hiện tại là 0
+                Gia: GiaInput.value
+            };
+    
+            // Kiểm tra xem Mã phòng đã tồn tại chưa bằng cách gửi yêu cầu GET đến API
+            fetch(`http://localhost/mvc-test/api/room/show.php?MaPhong=${newPhong.MaPhong}`)
+                .then(response => response.json())
+                .then(existingPhong => {
+                    if (existingPhong && existingPhong.MaPhong === newPhong.MaPhong) {
+                        // Nếu Mã phòng đã tồn tại, hiển thị thông báo lỗi
+                        alert("Mã phòng đã tồn tại. Vui lòng nhập Mã phòng khác!");
+                    } else {
+                        // Nếu Mã phòng chưa tồn tại, thêm mới
+                        fetch('http://localhost/mvc-test/api/room/create.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(newPhong)
                         })
-                        .then(data => {
-                            console.log(data);
-                            fetchPhongs();
-                            alert("Thêm thành công!");
-                        })
-                        .catch(error => console.error('Error:', error));
-                }
-            })
-            .catch(error => console.error('Error:', error));
-
-        addButton.disabled = false;
-        deleteButton.disabled = true;
-        updateButton.disabled = true;
-        addButton.style.opacity = '1';
-        deleteButton.style.opacity = '0.5';
-        updateButton.style.opacity = '0.5';
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                console.log(data);
+                                fetchPhongs();
+                                alert("Thêm thành công!");
+                            })
+                            .catch(error => console.error('Error:', error));
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+    
+            addButton.disabled = false;
+            deleteButton.disabled = true;
+            updateButton.disabled = true;
+            addButton.style.opacity = '1';
+            deleteButton.style.opacity = '0.5';
+            updateButton.style.opacity = '0.5';
+        } else {
+            // Nếu không nhập đầy đủ thông tin, hiển thị thông báo
+            alert("Bạn phải nhập đầy đủ thông tin (ngoại trừ Số người hiện tại)!");
+        }
     });
+    
 
 
     // Sự kiện click vào nút Sửa
