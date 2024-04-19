@@ -5,30 +5,38 @@ header('Content-Type: application/json');
 include_once '../../config/db.php';
 include_once '../../model/Student.php';
 
-// Kiểm tra xem có tham số MaSV được truyền từ phía client không
-if (isset($_GET['MaSV'])) {
-    // Lấy MaSV từ tham số truy vấn
-    $MaSV = $_GET['MaSV'];
+$db = new db();
+$connect = $db->connect();
 
-    // Khởi tạo kết nối đến cơ sở dữ liệu
-    $db = new db();
-    $connect = $db->connect();
+$student = new Student($connect);
 
-    // Khởi tạo đối tượng Student
-    $student = new Student($connect);
+// Kiểm tra xem từ khóa tìm kiếm đã được gửi từ frontend chưa
+$keyword = isset($_GET['keyword']) ? $_GET['keyword'] : die();
 
-    // Thực hiện tìm kiếm theo MaSV
-    $result = $student->searchByMaSV($MaSV);
+// Thực hiện tìm kiếm tài khoản theo từ khóa
+$result = $student->search($keyword);
 
-    // Kiểm tra kết quả tìm kiếm
-    if ($result) {
-        // Nếu tìm thấy sinh viên, trả về thông tin của sinh viên dưới dạng JSON
-        echo json_encode($result);
-    } else {
-        // Nếu không tìm thấy sinh viên, trả về thông báo lỗi
-        echo json_encode(array('message' => 'No record found for MaSV: ' . $MaSV));
-    }
+// Kiểm tra kết quả của tìm kiếm
+if (isset($result['message'])) {
+    // Nếu có thông báo lỗi, in ra và kết thúc
+    echo json_encode($result);
 } else {
-    // Nếu không có MaSV được truyền từ phía client, trả về thông báo lỗi
-    echo json_encode(array('message' => 'MaSV not provided'));
+    // Nếu có kết quả, trả về danh sách các tài khoản tìm thấy
+    $students_array = array();
+    foreach ($result as $student) {
+        $student_item = array(
+            'MaSV' => $student['MaSV'],
+            'HoTen' => $student['HoTen'],
+            'NgaySinh' => $student['NgaySinh'],
+            'GioiTinh' => $student['GioiTinh'],
+            'DiaChi' => $student['DiaChi'],
+            'SDT' => $student['SDT'],
+            'Mail' => $student['Mail'],
+            'MaPhong' => $student['MaPhong'],
+            'TenKhu' => $student['TenKhu'],
+            'user_account' => $student['user_account']
+        );
+        array_push($students_array, $student_item);
+    }
+    echo json_encode($students_array, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 }

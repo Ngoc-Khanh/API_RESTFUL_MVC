@@ -314,11 +314,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     });
 
+    // Gán sự kiện cho nút Tìm kiếm
+    searchButton.addEventListener('click', function () {
+        // Lấy giá trị MaSV từ input
+        const searchKeyWord = searchInput.value;
+        searchStudent(searchKeyWord);
+    });
 
     // Hàm để tìm kiếm sinh viên theo MaSV và hiển thị kết quả trên bảng
-    function searchStudent(MaSV) {
+    function searchStudent(keyword) {
         // Gọi API để lấy thông tin sinh viên theo MaSV
-        fetch(`http://localhost/mvc-test/api/student/search.php?MaSV=${MaSV}`)
+        fetch(`http://localhost/mvc-test/api/student/search.php?keyword=${keyword}`)
             .then(response => response.json())
             .then(data => {
                 // Hiển thị kết quả trên bảng
@@ -326,15 +332,6 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch(error => console.error('Error:', error));
     }
-    // Gán sự kiện cho nút Tìm kiếm
-    searchButton.addEventListener('click', function () {
-        // Lấy giá trị MaSV từ input
-        const searchMaSV = searchInput.value;
-        searchStudent(searchMaSV);
-        resetForm();
-    });
-
-
 
     function resetForm() {
         selectedStudentMaSV = null;

@@ -106,20 +106,21 @@ class Account
     }
 
     // Phương thức tìm kiếm tài khoản
-    public function search($keyword) {
+    public function search($keyword)
+    {
         // Tạo truy vấn SQL để tìm kiếm tài khoản theo từ khóa
         $query = "SELECT * FROM accounts WHERE user_account LIKE :keyword OR type_account LIKE :keyword";
-    
+
         // Chuẩn bị truy vấn
         $stmt = $this->conn->prepare($query);
-    
+
         // Gán giá trị cho tham số
         $keyword = '%' . $keyword . '%';
         $stmt->bindParam(':keyword', $keyword);
-    
+
         // Thực hiện truy vấn
         $stmt->execute();
-    
+
         // Kiểm tra xem có kết quả tìm kiếm không
         if ($stmt->rowCount() > 0) {
             // Lấy tất cả các bản ghi tìm thấy
@@ -141,7 +142,8 @@ class Account
         }
     }
 
-    public function isDuplicate() {
+    public function isDuplicate()
+    {
         // Query to check if the user_account already exists
         $query = "SELECT id_account FROM accounts WHERE user_account = :user_account";
 
@@ -155,7 +157,7 @@ class Account
         $stmt->execute();
 
         // Check if any row exists
-        if($stmt->rowCount() > 0){
+        if ($stmt->rowCount() > 0) {
             return true; // Duplicate account exists
         } else {
             return false; // No duplicate account

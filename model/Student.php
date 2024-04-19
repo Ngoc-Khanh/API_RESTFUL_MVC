@@ -14,7 +14,6 @@ class Student
     public $TenKhu;
     public $user_account;
 
-
     public function __construct($db)
     {
         $this->conn = $db;
@@ -170,24 +169,43 @@ class Student
     }
 
     // Phương thức tìm kiếm sinh viên theo MaSV
-    public function searchByMaSV($MaSV)
+    public function search($keyword)
     {
         // Chuẩn bị truy vấn SQL để tìm kiếm sinh viên theo MaSV
-        $query = "SELECT * FROM sinhvien WHERE MaSV LIKE :MaSV";
+        $query = "SELECT * FROM sinhvien WHERE MaSV LIKE :keyword OR HoTen LIKE :keyword";
 
         // Chuẩn bị câu lệnh SQL và thực hiện truy vấn
         $stmt = $this->conn->prepare($query);
-        $stmt->bindValue(':MaSV', '%' . $MaSV . '%', PDO::PARAM_STR); // Sử dụng PDO::PARAM_STR để chỉ định kiểu dữ liệu của tham số là string
-        $stmt->execute();
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Kiểm tra xem có bản ghi nào được trả về không
-        if (!empty($result)) {
-            // Nếu có, trả về dữ liệu sinh viên
-            return $result;
+        $keyword = '%' . $keyword . '%';
+        $stmt->bindParam(':keyword', $keyword); 
+        
+        $stmt->execute();
+
+        // Kiểm tra xem có kết quả tìm kiếm không
+        if ($stmt->rowCount() > 0) {
+            // Lấy tất cả các bản ghi tìm thấy
+            $students = array();
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $student_item = array(
+                    'MaSV' => $row['MaSV'],
+                    'HoTen' => $row['HoTen'],
+                    'NgaySinh' => $row['NgaySinh'],
+                    'GioiTinh' => $row['GioiTinh'],
+                    'DiaChi' => $row['DiaChi'],
+                    'SDT' => $row['SDT'],
+                    'Mail' => $row['Mail'],
+                    'MaPhong' => $row['MaPhong'],
+                    'TenKhu' => $row['TenKhu'],
+                    'user_account' => $row['user_account']
+                );
+                // Thêm tài khoản vào mảng kết quả
+                array_push($students, $student_item);
+            }
+            return $students;
         } else {
-            // Nếu không tìm thấy sinh viên, trả về null
-            return null;
+            // Trả về thông báo nếu không tìm thấy kết quả
+            return array('message' => 'No records found for keyword: ' . $keyword);
         }
     }
 }

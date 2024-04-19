@@ -34,4 +34,3 @@ if (isset($result['message'])) {
     }
     echo json_encode($accounts_array, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 }
-?>
