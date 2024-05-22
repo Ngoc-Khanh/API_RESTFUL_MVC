@@ -1,2 +1,6 @@
 bui hong khanh
+<<<<<<< HEAD
 hoang hai namcvbnmdfgh
+=======
+ 72dctt23 
+>>>>>>> 4ca57bb082620ef173894f54db0fc510a481bd84
